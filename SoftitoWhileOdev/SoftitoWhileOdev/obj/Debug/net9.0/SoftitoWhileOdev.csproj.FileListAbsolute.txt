@@ -1,0 +1,14 @@
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\bin\Debug\net9.0\SoftitoWhileOdev.exe
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\bin\Debug\net9.0\SoftitoWhileOdev.deps.json
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\bin\Debug\net9.0\SoftitoWhileOdev.runtimeconfig.json
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\bin\Debug\net9.0\SoftitoWhileOdev.dll
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\bin\Debug\net9.0\SoftitoWhileOdev.pdb
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\SoftitoWhileOdev.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\SoftitoWhileOdev.AssemblyInfoInputs.cache
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\SoftitoWhileOdev.AssemblyInfo.cs
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\SoftitoWhileOdev.csproj.CoreCompileInputs.cache
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\SoftitoWhileOdev.dll
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\refint\SoftitoWhileOdev.dll
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\SoftitoWhileOdev.pdb
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\SoftitoWhileOdev.genruntimeconfig.cache
+C:\Users\Monster\source\repos\SoftitoWhileOdev\SoftitoWhileOdev\obj\Debug\net9.0\ref\SoftitoWhileOdev.dll
