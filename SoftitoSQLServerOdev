@@ -1,0 +1,210 @@
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'HastaneDB')
+BEGIN
+    CREATE DATABASE HastaneDB;
+END;
+GO
+
+USE HastaneDB;
+GO
+
+CREATE TABLE Departmanlar (
+    departman_id INT IDENTITY(1,1) PRIMARY KEY,
+    departman_adi NVARCHAR(100)
+);
+
+CREATE TABLE Hastalar (
+    hasta_id INT IDENTITY(1,1) PRIMARY KEY,
+    ad NVARCHAR(100),
+    soyad NVARCHAR(100),
+    dogum_tarihi DATE,
+    cinsiyet NVARCHAR(10),
+    iletisim_bilgisi NVARCHAR(255)
+);
+
+CREATE TABLE Doktorlar (
+    doktor_id INT IDENTITY(1,1) PRIMARY KEY,
+    ad NVARCHAR(100),
+    soyad NVARCHAR(100),
+    dogum_tarihi DATE,
+    uzmanlik NVARCHAR(100),
+    departman_id INT,
+    iletisim_bilgisi NVARCHAR(255),
+    FOREIGN KEY (departman_id) REFERENCES Departmanlar(departman_id)
+);
+
+CREATE TABLE Randevular (
+    randevu_id INT IDENTITY(1,1) PRIMARY KEY,
+    hasta_id INT,
+    doktor_id INT,
+    randevu_tarihi DATETIME,
+    durum NVARCHAR(50),
+    FOREIGN KEY (hasta_id) REFERENCES Hastalar(hasta_id),
+    FOREIGN KEY (doktor_id) REFERENCES Doktorlar(doktor_id)
+);
+
+CREATE TABLE Tedaviler (
+    tedavi_id INT IDENTITY(1,1) PRIMARY KEY,
+    hasta_id INT,
+    doktor_id INT,
+    tedavi_detaylari NVARCHAR(MAX),
+    tedavi_tarihi DATE,
+    FOREIGN KEY (hasta_id) REFERENCES Hastalar(hasta_id),
+    FOREIGN KEY (doktor_id) REFERENCES Doktorlar(doktor_id)
+);
+
+CREATE TABLE Ilaclar (
+    ilac_id INT IDENTITY(1,1) PRIMARY KEY,
+    hasta_id INT,
+    doktor_id INT,
+    ilac_adi NVARCHAR(255),
+    dozaj NVARCHAR(100),
+    baslangic_tarihi DATE,
+    bitis_tarihi DATE,
+    FOREIGN KEY (hasta_id) REFERENCES Hastalar(hasta_id),
+    FOREIGN KEY (doktor_id) REFERENCES Doktorlar(doktor_id)
+);
+
+CREATE TABLE FinansalIslemler (
+    islem_id INT IDENTITY(1,1) PRIMARY KEY,
+    hasta_id INT,
+    islem_turu NVARCHAR(100),
+    tutar MONEY,
+    odeme_durumu NVARCHAR(50),
+    islem_tarihi DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (hasta_id) REFERENCES Hastalar(hasta_id)
+);
+
+INSERT INTO Departmanlar (departman_adi) VALUES 
+('Kardiyoloji'), 
+('Nöroloji'), 
+('Pediatri'), 
+('Ortopedi');
+
+INSERT INTO Doktorlar (ad, soyad, dogum_tarihi, uzmanlik, departman_id, iletisim_bilgisi) 
+VALUES 
+('Hüseyin', 'Kara', '1972-11-20', 'Kardiyoloji', 1, 'huseyin.kara@gmail.com'),
+('Ardil', 'Sungur', '2001-05-04', 'Nöroloji', 2, 'ardil@gmail.com');
+
+INSERT INTO Hastalar (ad, soyad, dogum_tarihi, cinsiyet, iletisim_bilgisi)
+VALUES 
+('Ahmet', 'Kaya', '1980-05-10', 'Erkek', 'ahmet.kaya@gmail.com'),
+('Zeynep', 'Çelik', '1992-08-21', 'Kadın', 'zeynep.celik@gmail.com'),
+('Mehmet', 'Yılmaz', '1972-11-20', 'Erkek', NULL);
+
+INSERT INTO Randevular (hasta_id, doktor_id, randevu_tarihi, durum)
+VALUES 
+(1, 1, '2025-02-15 10:00:00', 'Planlandı'),
+(2, 2, '2025-02-16 11:30:00', 'Tamamlandı');
+
+INSERT INTO Ilaclar (hasta_id, doktor_id, ilac_adi, dozaj, baslangic_tarihi, bitis_tarihi)
+VALUES 
+(1, 1, 'Aspirin', '100mg', '2025-02-15', '2025-02-25'),
+(2, 2, 'Parol', '500mg', '2025-02-16', '2025-02-20');
+
+INSERT INTO FinansalIslemler (hasta_id, islem_turu, tutar, odeme_durumu)
+VALUES 
+(1, 'Muayene Ücreti', 200, 'Ödendi'),
+(2, 'Tetkik Ücreti', 500, 'Bekleniyor');
+
+INSERT INTO Tedaviler (hasta_id, doktor_id, tedavi_detaylari, tedavi_tarihi)
+VALUES 
+(1, 1, 'Kalp ritim bozukluğu tedavisi', '2025-03-05'),
+(2, 2, 'Migren ataklarının önlenmesi için ilaç tedavisi', '2025-03-08'),
+(1, 1, 'Yüksek tansiyon kontrolü', '2025-03-10'),
+(2, 2, 'Beyin MR çekimi ve teşhis', '2025-03-12'),
+(1, 1, 'Şeker hastalığı için diyet ve ilaç tedavisi', '2025-03-15'),
+(2, 2, 'Kas gevşetici ve fizik tedavi önerisi', '2025-03-18'),
+(1, 1, 'Reflü tedavisi için mide koruyucu ilaçlar', '2025-03-20');
+
+
+SELECT TOP 5 * 
+FROM Tedaviler 
+ORDER BY tedavi_tarihi DESC;
+
+SELECT 
+    MAX(CAST(LEFT(dozaj, PATINDEX('%[^0-9]%', dozaj + 'X') - 1) AS INT)) AS 'Maksimum Dozaj'
+FROM Ilaclar;
+
+SELECT 
+    MIN(CAST(LEFT(dozaj, PATINDEX('%[^0-9]%', dozaj + 'X') - 1) AS INT)) AS 'Minimum Dozaj'
+FROM Ilaclar;
+
+SELECT COUNT(ilac_id) AS 'İlaç Sayısı' FROM Ilaclar;
+
+SELECT COUNT(randevu_id) AS 'Randevu Sayısı' FROM Randevular WHERE YEAR(randevu_tarihi) > 1996;
+
+SELECT AVG(DATEDIFF(YEAR, dogum_tarihi, GETDATE())) AS 'Ortalama Yaş' FROM Doktorlar;
+
+SELECT * FROM Hastalar WHERE iletisim_bilgisi IS NULL;
+
+SELECT ilac_id, COUNT(ilac_id) FROM Ilaclar GROUP BY ilac_id;
+
+SELECT * FROM Hastalar WHERE ad LIKE 'A%';
+
+SELECT * FROM Doktorlar WHERE uzmanlik LIKE '%Dahiliye%';
+
+CREATE PROCEDURE RandevuEkle
+(
+    @hasta_id INT,
+    @doktor_id INT,
+    @randevu_tarihi DATETIME,
+    @durum NVARCHAR(50)
+)
+AS
+BEGIN
+    INSERT INTO Randevular (hasta_id, doktor_id, randevu_tarihi, durum) 
+    VALUES (@hasta_id, @doktor_id, @randevu_tarihi, @durum);
+END;
+GO
+
+EXEC RandevuEkle 1, 2, '2025-03-01 14:00:00', 'Planlandı';
+
+CREATE TRIGGER FinansalIslemKontrol
+ON FinansalIslemler
+AFTER INSERT
+AS
+BEGIN
+    UPDATE FinansalIslemler
+    SET odeme_durumu = 'Bekleniyor'
+    WHERE odeme_durumu IS NULL;
+END;
+GO
+
+CREATE FUNCTION HastaBorc(@hasta_id INT)
+RETURNS MONEY
+AS
+BEGIN
+    DECLARE @toplamBorc MONEY;
+    SELECT @toplamBorc = SUM(tutar) FROM FinansalIslemler WHERE hasta_id = @hasta_id AND odeme_durumu = 'Bekleniyor';
+    RETURN @toplamBorc;
+END;
+GO
+
+SELECT dbo.HastaBorc(1) AS 'Toplam Bekleyen Borç';
+
+CREATE FUNCTION IlacRaporu(@hasta_id INT)
+RETURNS TABLE
+AS
+RETURN 
+(
+    SELECT ilac_adi, dozaj, baslangic_tarihi, bitis_tarihi
+    FROM Ilaclar
+    WHERE hasta_id = @hasta_id
+);
+GO
+
+SELECT * FROM dbo.IlacRaporu(1);
+
+CREATE FUNCTION RandevuKontrol(@doktor_id INT)
+RETURNS TABLE
+AS
+RETURN 
+(
+    SELECT hasta_id, randevu_tarihi, durum
+    FROM Randevular
+    WHERE doktor_id = @doktor_id AND randevu_tarihi >= GETDATE()
+);
+GO
+
+SELECT * FROM dbo.RandevuKontrol(1);
+
